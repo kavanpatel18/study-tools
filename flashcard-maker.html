@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard Maker</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f3ee;
+    --white: #ffffff;
+    --card-shadow: rgba(60,40,20,0.12);
+    --ink: #2c1f0e;
+    --rust: #c0533a;
+    --clay: #d4825a;
+    --sage: #4a7c6f;
+    --tan: #e8ddd0;
+    --tan-dark: #d4c8b8;
+    --muted: #9a8878;
+    --border: #ddd4c8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* Subtle dot pattern bg */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, #c8b8a8 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  /* ─── LAYOUT ─── */
+  .app { position: relative; display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    background: var(--ink);
+    color: #f0e8dc;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .brand {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 1.2rem;
+  }
+
+  .brand-eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 0.3rem;
+  }
+
+  .brand h1 {
+    font-family: 'Lora', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .brand p {
+    font-size: 0.78rem;
+    color: rgba(240,232,220,0.5);
+    margin-top: 0.3rem;
+  }
+
+  /* ADD CARD FORM */
+  .form-section h3 {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 0.75rem;
+  }
+
+  .field { margin-bottom: 0.75rem; }
+
+  .field label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(240,232,220,0.45);
+    margin-bottom: 0.3rem;
+  }
+
+  .field input, .field textarea, .field select {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #f0e8dc;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.55rem 0.75rem;
+    outline: none;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: var(--clay);
+  }
+
+  .field input::placeholder, .field textarea::placeholder { color: rgba(240,232,220,0.25); }
+
+  .field select option { background: #2c1f0e; }
+
+  .add-card-btn {
+    width: 100%;
+    background: var(--rust);
+    color: white;
+    border: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.7rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .add-card-btn:hover { background: var(--clay); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+  /* DECK LIST */
+  .deck-section h3 {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .deck-count {
+    background: var(--rust);
+    color: white;
+    font-size: 0.6rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  .deck-list { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .deck-chip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 0.5rem 0.7rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.82rem;
+  }
+
+  .deck-chip:hover, .deck-chip.active {
+    background: rgba(192,83,58,0.2);
+    border-color: var(--rust);
+    color: #f0e8dc;
+  }
+
+  .deck-chip .chip-count { font-size: 0.65rem; color: rgba(240,232,220,0.4); }
+  .deck-chip.active .chip-count { color: var(--clay); }
+
+  /* ─── MAIN AREA ─── */
+  .main { padding: 2.5rem 2rem; display: flex; flex-direction: column; gap: 2rem; }
+
+  /* STUDY CONTROLS */
+  .study-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .deck-title {
+    font-family: 'Lora', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  .ctrl-btn {
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 1px 3px var(--card-shadow);
+  }
+
+  .ctrl-btn:hover { background: var(--tan); border-color: var(--tan-dark); }
+  .ctrl-btn.primary { background: var(--rust); color: white; border-color: var(--rust); }
+  .ctrl-btn.primary:hover { background: var(--clay); }
+
+  /* STUDY SCORE */
+  .score-row {
+    display: flex;
+    gap: 1rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1.2rem;
+    box-shadow: 0 1px 4px var(--card-shadow);
+    flex-wrap: wrap;
+  }
+
+  .score-stat { font-size: 0.78rem; color: var(--muted); }
+  .score-stat strong { color: var(--ink); font-weight: 600; }
+  .score-stat.good strong { color: var(--sage); }
+  .score-stat.bad strong { color: var(--rust); }
+
+  /* FLASHCARD */
+  .card-stage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1200px;
+    padding: 1rem 0;
+  }
+
+  .flashcard-wrap {
+    width: 100%;
+    max-width: 560px;
+    aspect-ratio: 5 / 3;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .flashcard-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .flashcard-wrap.flipped .flashcard-inner { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow:
+      0 4px 16px var(--card-shadow),
+      0 1px 4px rgba(60,40,20,0.08),
+      inset 0 0 0 1px rgba(255,255,255,0.5);
+  }
+
+  .card-front {
+    background: white;
+  }
+
+  .card-back {
+    background: var(--ink);
+    color: #f0e8dc;
+    transform: rotateY(180deg);
+  }
+
+  .card-corner {
+    position: absolute;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.3;
+  }
+
+  .card-front .card-corner { color: var(--ink); }
+  .card-back .card-corner { color: #f0e8dc; }
+
+  .card-corner.tl { top: 1rem; left: 1.2rem; }
+  .card-corner.br { bottom: 1rem; right: 1.2rem; }
+
+  .card-tag {
+    position: absolute;
+    top: 1rem; right: 1.2rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--tan);
+    color: var(--muted);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+  }
+
+  .card-back .card-tag { background: rgba(255,255,255,0.08); color: rgba(240,232,220,0.4); }
+
+  .card-q {
+    font-family: 'Lora', serif;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+
+  .card-hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.75rem;
+    font-style: italic;
+  }
+
+  .card-a {
+    font-family: 'Lora', serif;
+    font-size: clamp(0.95rem, 2.2vw, 1.25rem);
+    line-height: 1.5;
+    color: #f0e8dc;
+  }
+
+  /* ANSWER BUTTONS */
+  .answer-btns {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .ans-btn {
+    padding: 0.65rem 2rem;
+    border: 2px solid;
+    border-radius: 6px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .ans-btn.wrong { border-color: var(--rust); color: var(--rust); background: transparent; }
+  .ans-btn.wrong:hover { background: var(--rust); color: white; }
+  .ans-btn.right { border-color: var(--sage); color: var(--sage); background: transparent; }
+  .ans-btn.right:hover { background: var(--sage); color: white; }
+
+  /* CARD GRID */
+  .cards-section h3 {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mini-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .mini-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 4px var(--card-shadow);
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .mini-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px var(--card-shadow); }
+
+  .mini-q {
+    font-family: 'Lora', serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+    line-height: 1.4;
+  }
+
+  .mini-a {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .mini-tag {
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 0.3rem;
+  }
+
+  .mini-del {
+    position: absolute;
+    top: 0.5rem; right: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--border);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.15s;
+    line-height: 1;
+  }
+
+  .mini-del:hover { color: var(--rust); }
+
+  /* EMPTY */
+  .empty-cards {
+    text-align: center;
+    padding: 3rem;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.9rem;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    background: white;
+  }
+
+  /* FLIP HINT */
+  .flip-hint {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: -0.5rem;
+  }
+
+  /* HIDDEN */
+  .hidden { display: none; }
+
+  @media (max-width: 700px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; }
+    .main { padding: 1.5rem 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-eyebrow">Study Tool</div>
+    <h1>Flashcard<br>Maker</h1>
+    <p>Build decks. Study smart.</p>
+  </div>
+
+  <div class="form-section">
+    <h3>Add a Card</h3>
+    <div class="field">
+      <label>Deck / Subject</label>
+      <input type="text" id="deckInput" placeholder="e.g. Biology, History…" list="deckSuggestions">
+      <datalist id="deckSuggestions"></datalist>
+    </div>
+    <div class="field">
+      <label>Question</label>
+      <textarea id="questionInput" rows="3" placeholder="What is…?"></textarea>
+    </div>
+    <div class="field">
+      <label>Answer</label>
+      <textarea id="answerInput" rows="3" placeholder="The answer is…"></textarea>
+    </div>
+    <button class="add-card-btn" onclick="addCard()">+ Add to Deck</button>
+  </div>
+
+  <div class="deck-section">
+    <h3>
+      My Decks
+      <span class="deck-count" id="totalCount">0</span>
+    </h3>
+    <div class="deck-list" id="deckList">
+      <div style="font-size:0.75rem; color:rgba(240,232,220,0.3); font-style:italic;">No decks yet…</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- STUDY CONTROLS -->
+  <div class="study-controls">
+    <div class="deck-title" id="deckTitle">All Cards</div>
+    <button class="ctrl-btn" onclick="setFilter('all')">All Decks</button>
+    <button class="ctrl-btn primary" onclick="startStudy()">▶ Study Mode</button>
+  </div>
+
+  <!-- SCORE ROW (hidden until study starts) -->
+  <div class="score-row hidden" id="scoreRow">
+    <div class="score-stat">Card <strong id="cardPos">1</strong> of <strong id="cardTotal">0</strong></div>
+    <div class="score-stat good">✓ Correct: <strong id="scoreRight">0</strong></div>
+    <div class="score-stat bad">✗ Wrong: <strong id="scoreWrong">0</strong></div>
+    <div style="margin-left:auto;">
+      <button class="ctrl-btn" onclick="exitStudy()">Exit Study</button>
+      <button class="ctrl-btn" onclick="nextCard()" style="margin-left:0.5rem;">Next →</button>
+    </div>
+  </div>
+
+  <!-- FLASHCARD STAGE (study mode) -->
+  <div class="card-stage hidden" id="cardStage">
+    <div class="flashcard-wrap" id="flashcardWrap" onclick="flipCard()">
+      <div class="flashcard-inner">
+        <div class="card-face card-front">
+          <div class="card-corner tl">Question</div>
+          <div class="card-tag" id="cardDeckTag">—</div>
+          <div class="card-q" id="cardQuestion">—</div>
+          <div class="card-hint">Click to reveal answer</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-corner tl">Answer</div>
+          <div class="card-corner br">Answer</div>
+          <div class="card-tag" id="cardDeckTagBack">—</div>
+          <div class="card-a" id="cardAnswer">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flip-hint hidden" id="flipHint">Click card to flip · Then mark yourself</div>
+
+  <!-- ANSWER BUTTONS (shown after flip) -->
+  <div class="answer-btns hidden" id="answerBtns">
+    <button class="ans-btn wrong" onclick="markAnswer(false)">✗ Didn't Know</button>
+    <button class="ans-btn right" onclick="markAnswer(true)">✓ Got It</button>
+  </div>
+
+  <!-- CARD GRID (browse mode) -->
+  <div class="cards-section" id="browseSection">
+    <h3>
+      <span id="browseTitle">All Cards</span>
+      <span style="font-size:0.8rem; color:var(--muted); font-weight:400;" id="browseCount"></span>
+    </h3>
+    <div class="mini-grid" id="miniGrid">
+      <div class="empty-cards">No cards yet — add your first one!</div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+  let cards = JSON.parse(localStorage.getItem('flashcards') || '[]');
+  let currentFilter = 'all';
+  let studyQueue = [];
+  let studyIndex = 0;
+  let scoreRight = 0;
+  let scoreWrong = 0;
+  let isFlipped = false;
+  let studyMode = false;
+
+  function save() { localStorage.setItem('flashcards', JSON.stringify(cards)); }
+
+  function addCard() {
+    const deck = document.getElementById('deckInput').value.trim() || 'General';
+    const q = document.getElementById('questionInput').value.trim();
+    const a = document.getElementById('answerInput').value.trim();
+    if (!q || !a) return alert('Please enter both a question and an answer.');
+    cards.push({ id: Date.now(), deck, q, a, correct: 0, wrong: 0 });
+    save();
+    document.getElementById('questionInput').value = '';
+    document.getElementById('answerInput').value = '';
+    renderAll();
+  }
+
+  function deleteCard(id) {
+    cards = cards.filter(c => c.id !== id);
+    save();
+    renderAll();
+  }
+
+  function setFilter(deck) {
+    currentFilter = deck;
+    exitStudy();
+    renderAll();
+  }
+
+  function getFiltered() {
+    return currentFilter === 'all' ? [...cards] : cards.filter(c => c.deck === currentFilter);
+  }
+
+  function getDecks() {
+    const d = {};
+    cards.forEach(c => { d[c.deck] = (d[c.deck] || 0) + 1; });
+    return d;
+  }
+
+  function renderAll() {
+    renderSidebar();
+    renderBrowse();
+    updateDatalist();
+  }
+
+  function renderSidebar() {
+    const decks = getDecks();
+    const list = document.getElementById('deckList');
+    document.getElementById('totalCount').textContent = cards.length;
+
+    if (Object.keys(decks).length === 0) {
+      list.innerHTML = '<div style="font-size:0.75rem; color:rgba(240,232,220,0.3); font-style:italic;">No decks yet…</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    Object.entries(decks).forEach(([deck, count]) => {
+      const chip = document.createElement('div');
+      chip.className = 'deck-chip' + (currentFilter === deck ? ' active' : '');
+      chip.innerHTML = `<span>${deck}</span><span class="chip-count">${count} cards</span>`;
+      chip.onclick = () => setFilter(deck);
+      list.appendChild(chip);
+    });
+  }
+
+  function updateDatalist() {
+    const dl = document.getElementById('deckSuggestions');
+    const decks = Object.keys(getDecks());
+    dl.innerHTML = decks.map(d => `<option value="${d}">`).join('');
+  }
+
+  function renderBrowse() {
+    const filtered = getFiltered();
+    const label = currentFilter === 'all' ? 'All Cards' : currentFilter;
+    document.getElementById('deckTitle').textContent = label;
+    document.getElementById('browseTitle').textContent = label;
+    document.getElementById('browseCount').textContent = filtered.length + ' card' + (filtered.length !== 1 ? 's' : '');
+
+    const grid = document.getElementById('miniGrid');
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="empty-cards">No cards in this deck yet.</div>';
+      return;
+    }
+    grid.innerHTML = filtered.map(c => `
+      <div class="mini-card">
+        <div class="mini-tag">${c.deck}</div>
+        <div class="mini-q">${c.q}</div>
+        <div class="mini-a">${c.a}</div>
+        <button class="mini-del" onclick="deleteCard(${c.id})" title="Delete">×</button>
+      </div>
+    `).join('');
+  }
+
+  function startStudy() {
+    const filtered = getFiltered();
+    if (filtered.length === 0) { alert('No cards in this deck!'); return; }
+    studyQueue = shuffle([...filtered]);
+    studyIndex = 0;
+    scoreRight = 0;
+    scoreWrong = 0;
+    studyMode = true;
+    document.getElementById('scoreRow').classList.remove('hidden');
+    document.getElementById('cardStage').classList.remove('hidden');
+    document.getElementById('flipHint').classList.remove('hidden');
+    document.getElementById('browseSection').classList.add('hidden');
+    showCard();
+  }
+
+  function exitStudy() {
+    studyMode = false;
+    document.getElementById('scoreRow').classList.add('hidden');
+    document.getElementById('cardStage').classList.add('hidden');
+    document.getElementById('flipHint').classList.add('hidden');
+    document.getElementById('answerBtns').classList.add('hidden');
+    document.getElementById('browseSection').classList.remove('hidden');
+    document.getElementById('flashcardWrap').classList.remove('flipped');
+    isFlipped = false;
+  }
+
+  function showCard() {
+    if (studyIndex >= studyQueue.length) {
+      // Done!
+      document.getElementById('cardQuestion').textContent = '🎉 Deck complete!';
+      document.getElementById('cardAnswer').textContent = `${scoreRight} correct, ${scoreWrong} wrong.`;
+      document.getElementById('answerBtns').classList.add('hidden');
+      document.getElementById('flipHint').classList.add('hidden');
+      return;
+    }
+    const c = studyQueue[studyIndex];
+    document.getElementById('cardQuestion').textContent = c.q;
+    document.getElementById('cardAnswer').textContent = c.a;
+    document.getElementById('cardDeckTag').textContent = c.deck;
+    document.getElementById('cardDeckTagBack').textContent = c.deck;
+    document.getElementById('cardPos').textContent = studyIndex + 1;
+    document.getElementById('cardTotal').textContent = studyQueue.length;
+    document.getElementById('scoreRight').textContent = scoreRight;
+    document.getElementById('scoreWrong').textContent = scoreWrong;
+
+    // Reset flip
+    document.getElementById('flashcardWrap').classList.remove('flipped');
+    document.getElementById('answerBtns').classList.add('hidden');
+    isFlipped = false;
+  }
+
+  function flipCard() {
+    const wrap = document.getElementById('flashcardWrap');
+    wrap.classList.toggle('flipped');
+    isFlipped = !isFlipped;
+    if (isFlipped && studyIndex < studyQueue.length) {
+      document.getElementById('answerBtns').classList.remove('hidden');
+    }
+  }
+
+  function markAnswer(correct) {
+    const c = studyQueue[studyIndex];
+    const card = cards.find(x => x.id === c.id);
+    if (card) { correct ? card.correct++ : card.wrong++; }
+    correct ? scoreRight++ : scoreWrong++;
+    save();
+    studyIndex++;
+    showCard();
+  }
+
+  function nextCard() {
+    studyIndex++;
+    showCard();
+  }
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // Seed with a few demo cards if empty
+  if (cards.length === 0) {
+    cards = [
+      { id: 1, deck: 'Biology', q: 'What is the powerhouse of the cell?', a: 'The mitochondria — it produces ATP through cellular respiration.', correct: 0, wrong: 0 },
+      { id: 2, deck: 'Biology', q: 'What process do plants use to make food?', a: 'Photosynthesis — converting sunlight, CO₂ and water into glucose.', correct: 0, wrong: 0 },
+      { id: 3, deck: 'History', q: 'When did World War II end?', a: '1945 — V-E Day (Europe) on May 8, V-J Day (Japan) on September 2.', correct: 0, wrong: 0 },
+    ];
+    save();
+  }
+
+  renderAll();
+</script>
+</body>
+</html>

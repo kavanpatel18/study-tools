@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Mastery — Exam Prep Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f5f0e8;
+    --cream: #ede8dc;
+    --gold: #c9a84c;
+    --gold-light: #e8d5a3;
+    --rust: #c0533a;
+    --sage: #5a7a6a;
+    --muted: #6b6560;
+    --highlight: #f0e68c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rust), var(--gold), var(--sage), var(--gold), var(--rust));
+  }
+
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  header h1 em {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  header p {
+    font-size: 0.95rem;
+    color: #aaa;
+    font-weight: 300;
+    margin-top: 0.75rem;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    background: var(--cream);
+    border-bottom: 1px solid #d8d0c0;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: #d8d0c0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--rust));
+    border-radius: 3px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .progress-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* NAV TABS */
+  .technique-nav {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    background: var(--ink);
+    scrollbar-width: none;
+    padding: 0 1rem;
+  }
+
+  .technique-nav::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    padding: 0.9rem 1.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .nav-tab:hover { color: var(--gold-light); }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* MAIN CONTENT */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* TECHNIQUE PANEL */
+  .technique-panel {
+    display: none;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .technique-panel.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .technique-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #d8d0c0;
+  }
+
+  .technique-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .technique-title-block h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .technique-tagline {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .difficulty-badge {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border-radius: 2px;
+  }
+
+  .diff-easy { background: #d4edda; color: #2d6a4f; }
+  .diff-medium { background: #fff3cd; color: #856404; }
+  .diff-hard { background: #f8d7da; color: #721c24; }
+
+  /* SCIENCE CALLOUT */
+  .science-box {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    border-left: 4px solid var(--gold);
+    position: relative;
+  }
+
+  .science-box::before {
+    content: '🔬 The Science';
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .science-box p {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: #ccc;
+  }
+
+  /* STEPS */
+  .steps-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+
+  .step {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .step:hover { transform: translateX(3px); }
+
+  .step-check {
+    width: 28px;
+    height: 28px;
+    border: 2px solid #c8c0b0;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.25s;
+    margin-top: 2px;
+    background: white;
+  }
+
+  .step.done .step-check {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: white;
+  }
+
+  .step-body {
+    flex: 1;
+    background: white;
+    border: 1px solid #e0d8cc;
+    padding: 1rem 1.2rem;
+    border-radius: 2px;
+    transition: all 0.25s;
+  }
+
+  .step.done .step-body {
+    background: #f0f7f4;
+    border-color: #b8d8cc;
+    opacity: 0.7;
+  }
+
+  .step-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  .step-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  .step-tip {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--sage);
+    font-style: italic;
+  }
+
+  /* EXAMPLE BOX */
+  .example-box {
+    background: linear-gradient(135deg, #fffde7, #fff8e1);
+    border: 1px solid #e8d5a3;
+    border-left: 4px solid var(--gold);
+    padding: 1.2rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .example-box::before {
+    content: '✏️ Worked Example';
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #856404;
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+
+  .example-box p { font-size: 0.88rem; line-height: 1.65; }
+  .example-box strong { color: var(--rust); }
+
+  /* TRY IT */
+  .try-it {
+    background: var(--cream);
+    border: 1px dashed #c0b8a8;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .try-it h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: var(--rust);
+  }
+
+  .try-it textarea {
+    width: 100%;
+    min-height: 80px;
+    border: 1px solid #c8c0b0;
+    background: white;
+    padding: 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    resize: vertical;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .try-it textarea:focus { border-color: var(--gold); }
+  .try-it textarea::placeholder { color: #aaa; }
+
+  .try-btn {
+    margin-top: 0.75rem;
+    background: var(--ink);
+    color: var(--gold);
+    border: none;
+    padding: 0.6rem 1.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .try-btn:hover { background: var(--gold); color: var(--ink); }
+
+  .feedback {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--sage);
+    font-style: italic;
+    display: none;
+  }
+
+  /* NAVIGATION BUTTONS */
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #d8d0c0;
+  }
+
+  .nav-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    border: 2px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover, .nav-btn.primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav-btn:disabled:hover { background: transparent; color: var(--ink); }
+
+  /* QUICK REFERENCE CARD */
+  .reference-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .ref-card {
+    background: white;
+    border: 1px solid #e0d8cc;
+    padding: 1.2rem;
+    border-top: 3px solid var(--gold);
+  }
+
+  .ref-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .ref-card .ref-use {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .ref-card .ref-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--rust);
+    letter-spacing: 0.08em;
+  }
+
+  /* COMPLETION */
+  .completion-banner {
+    display: none;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--ink);
+    color: var(--paper);
+    margin-top: 2rem;
+  }
+
+  .completion-banner.visible { display: block; animation: fadeUp 0.5s ease; }
+
+  .completion-banner h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .completion-banner p {
+    color: #aaa;
+    font-size: 0.9rem;
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .technique-header { flex-direction: column; gap: 0.5rem; }
+    .technique-number { font-size: 2.5rem; }
+    .difficulty-badge { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Exam Prep · Memory Mastery</div>
+  <h1>Remember <em>Everything.</em><br>Study Smarter.</h1>
+  <p>Six research-backed techniques — step by step, with practice built in.</p>
+</header>
+
+<div class="progress-bar-wrap">
+  <span class="progress-label">Progress</span>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="progress-count" id="progressCount">0 / 30 steps</span>
+</div>
+
+<div class="technique-nav" id="techniqueNav">
+  <button class="nav-tab active" onclick="showTechnique(0)">① Spaced Rep.</button>
+  <button class="nav-tab" onclick="showTechnique(1)">② Active Recall</button>
+  <button class="nav-tab" onclick="showTechnique(2)">③ Method of Loci</button>
+  <button class="nav-tab" onclick="showTechnique(3)">④ Chunking</button>
+  <button class="nav-tab" onclick="showTechnique(4)">⑤ Mnemonics</button>
+  <button class="nav-tab" onclick="showTechnique(5)">⑥ Feynman</button>
+</div>
+
+<main>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TECHNIQUE 1: SPACED REPETITION -->
+<!-- ═══════════════════════════════════════ -->
+<div class="technique-panel active" id="panel-0">
+  <div class="technique-header">
+    <div class="technique-number">01</div>
+    <div class="technique-title-block">
+      <h2>Spaced Repetition</h2>
+      <div class="technique-tagline">Review at growing intervals to lock memories in long-term storage</div>
+    </div>
+    <span class="difficulty-badge diff-easy">Easy to start</span>
+  </div>
+
+  <div class="science-box">
+    <p>The "forgetting curve" (Ebbinghaus, 1885) shows we lose ~50% of new info within an hour. Reviewing just before you forget — and spacing reviews further apart each time — exploits how the brain consolidates memory during sleep and rest. Studies show spaced repetition can reduce study time by up to 50% vs. massed practice.</p>
+  </div>
+
+  <div class="steps-title">Step-by-Step Practice</div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 1 — Identify</div>
+      <div class="step-text">Write down 10–20 facts, definitions, or concepts you need to learn for your exam. These become your "cards."</div>
+      <div class="step-tip">💡 Keep each item atomic — one idea per card.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 2 — First Review</div>
+      <div class="step-text">Study all your cards today. Rate each 1–3 after reviewing: 1 = forgot, 2 = struggled, 3 = knew it.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 3 — Schedule Next Reviews</div>
+      <div class="step-text">Use this interval ladder: Day 1 → Day 3 → Day 7 → Day 14 → Day 30. Hard cards (rated 1) go back to Day 1. Easy cards (rated 3) jump ahead.</div>
+      <div class="step-tip">💡 Apps like Anki do this automatically — highly recommended.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 4 — Daily Review Sessions</div>
+      <div class="step-text">Spend 15–20 min/day reviewing only due cards. Don't cram — consistency over time beats marathon sessions.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 5 — The Night Before</div>
+      <div class="step-text">Do one final pass of all cards. Sleep 7–8 hours. Memory consolidation happens during sleep — this is not optional!</div>
+      <div class="step-tip">💡 Your brain replays memories during REM sleep. Sleeping after review is as important as the review itself.</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <p>Learning the <strong>Krebs cycle steps</strong> for a biology exam? Create one card per step (8 total). Review all 8 today. Tomorrow review any you missed. In 3 days review all again. By exam week, you'll only need to review 2–3 shaky ones.</p>
+  </div>
+
+  <div class="try-it">
+    <h4>✏️ Try It Now</h4>
+    <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.8rem;">List 3 things you need to memorize for your next exam — one per line:</p>
+    <textarea id="sr-input" placeholder="1. &#10;2. &#10;3. "></textarea>
+    <button class="try-btn" onclick="confirmTryIt('sr-input', 'sr-feedback', 'Great start! These 3 items are now your first spaced repetition cards. Review them again tomorrow, then in 3 days. Keep this list somewhere visible.')">Set My Review Schedule →</button>
+    <div class="feedback" id="sr-feedback"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" disabled>← Previous</button>
+    <button class="nav-btn primary" onclick="showTechnique(1)">Next: Active Recall →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TECHNIQUE 2: ACTIVE RECALL -->
+<!-- ═══════════════════════════════════════ -->
+<div class="technique-panel" id="panel-1">
+  <div class="technique-header">
+    <div class="technique-number">02</div>
+    <div class="technique-title-block">
+      <h2>Active Recall</h2>
+      <div class="technique-tagline">Force your brain to retrieve — not re-read</div>
+    </div>
+    <span class="difficulty-badge diff-easy">Easy to start</span>
+  </div>
+
+  <div class="science-box">
+    <p>The "testing effect" (Roediger & Karpicke, 2006) shows that retrieving information from memory strengthens it far more than passively re-reading. Students who practiced retrieval scored 50% higher on delayed tests than re-readers. The harder the retrieval, the stronger the memory.</p>
+  </div>
+
+  <div class="steps-title">Step-by-Step Practice</div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 1 — Read Once, Then Close</div>
+      <div class="step-text">Read a section of your notes or textbook ONE time. Then close it. Do not re-read. This feels uncomfortable — that's the point.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 2 — Brain Dump</div>
+      <div class="step-text">On a blank sheet of paper, write everything you can remember from what you just read. Don't peek. Incomplete is fine — you're training retrieval, not copying.</div>
+      <div class="step-tip">💡 Use a timer — 5 minutes of recall beats 20 minutes of re-reading.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 3 — Check & Mark Gaps</div>
+      <div class="step-text">Open your notes and compare. Circle or highlight everything you missed. These gaps are your study priorities — not what you already know.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 4 — Question Everything</div>
+      <div class="step-text">Turn each key fact into a question. "The mitochondria is the powerhouse of the cell" → "What is the function of the mitochondria?" Quiz yourself with questions, not answers.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 5 — Practice Past Papers</div>
+      <div class="step-text">Use old exam questions as active recall practice. Do them under timed, closed-book conditions. This is the single highest-impact study activity for exams.</div>
+      <div class="step-tip">💡 Even 10-minute "mini exams" from memory are powerful.</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <p>After reading a chapter on <strong>the French Revolution</strong>, close the book and write down every cause, key figure, and date you can recall. You remember 6 of 12 causes? Perfect — now study only the 6 you missed.</p>
+  </div>
+
+  <div class="try-it">
+    <h4>✏️ Try It Now</h4>
+    <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.8rem;">Without looking anything up — what do you remember about the last topic you studied? Write it here:</p>
+    <textarea id="ar-input" placeholder="Write everything you recall..."></textarea>
+    <button class="try-btn" onclick="confirmTryIt('ar-input', 'ar-feedback', 'That\'s active recall in action! Whatever you couldn\'t write down — that\'s what you study next. Go check your notes and find your gaps.')">Identify My Gaps →</button>
+    <div class="feedback" id="ar-feedback"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="showTechnique(0)">← Previous</button>
+    <button class="nav-btn primary" onclick="showTechnique(2)">Next: Method of Loci →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TECHNIQUE 3: METHOD OF LOCI -->
+<!-- ═══════════════════════════════════════ -->
+<div class="technique-panel" id="panel-2">
+  <div class="technique-header">
+    <div class="technique-number">03</div>
+    <div class="technique-title-block">
+      <h2>Method of Loci</h2>
+      <div class="technique-tagline">Anchor information to vivid locations in a mental journey</div>
+    </div>
+    <span class="difficulty-badge diff-medium">Medium effort</span>
+  </div>
+
+  <div class="science-box">
+    <p>Used by ancient Greek orators, this technique exploits the brain's exceptional spatial memory. Neuroimaging shows that memory champions use the hippocampus (spatial navigation region) rather than rote memorization pathways. A 2017 study trained beginners in 40 days — they went from average to top 20% in memory competitions.</p>
+  </div>
+
+  <div class="steps-title">Step-by-Step Practice</div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 1 — Choose Your Palace</div>
+      <div class="step-text">Pick a place you know intimately: your home, your commute route, your school. This is your "memory palace." You'll mentally walk through it the same way every time.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 2 — Define Your Stations</div>
+      <div class="step-text">Identify 10–15 distinct "stations" along your route (front door → hallway → kitchen counter → fridge → etc.). These become fixed memory slots.</div>
+      <div class="step-tip">💡 Unusual or slightly absurd locations work better — they're more memorable.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 3 — Create Vivid Images</div>
+      <div class="step-text">For each fact, create an exaggerated, bizarre, or funny image. The more emotionally vivid and weird, the better. Movement, smell, sound — engage all senses.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 4 — Place Images at Stations</div>
+      <div class="step-text">Mentally "walk" your palace and place each image at its station. Spend 5 seconds vividly imagining the scene — don't rush this step.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 5 — Walk It to Retrieve</div>
+      <div class="step-text">To recall, mentally walk the palace from start to finish. Each station should trigger its image, which triggers the fact. Practice the walk 3× over 2 days.</div>
+      <div class="step-tip">💡 You can reuse the palace for new content — just "clear" the old images first.</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <p>Memorizing the <strong>order of planets</strong>: At your front door, a giant <strong>Mercury thermometer</strong> explodes. In the hallway, a beautiful <strong>Venus</strong> flytrap eats your shoes. In the kitchen, a blue marble (Earth) rolls across the counter. A red tomato (Mars) splats on the fridge... and so on.</p>
+  </div>
+
+  <div class="try-it">
+    <h4>✏️ Try It Now</h4>
+    <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.8rem;">Describe your memory palace route (5 stations minimum) — what locations will you use?</p>
+    <textarea id="loci-input" placeholder="Station 1: Front door&#10;Station 2: Hallway&#10;Station 3: ..."></textarea>
+    <button class="try-btn" onclick="confirmTryIt('loci-input', 'loci-feedback', 'Your palace is ready! Now pick 5 facts you need to memorize and create one vivid, silly image for each — then place them at these stations.')">Build My Palace →</button>
+    <div class="feedback" id="loci-feedback"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="showTechnique(1)">← Previous</button>
+    <button class="nav-btn primary" onclick="showTechnique(3)">Next: Chunking →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TECHNIQUE 4: CHUNKING -->
+<!-- ═══════════════════════════════════════ -->
+<div class="technique-panel" id="panel-3">
+  <div class="technique-header">
+    <div class="technique-number">04</div>
+    <div class="technique-title-block">
+      <h2>Chunking</h2>
+      <div class="technique-tagline">Group information into meaningful clusters to expand memory capacity</div>
+    </div>
+    <span class="difficulty-badge diff-easy">Easy to start</span>
+  </div>
+
+  <div class="science-box">
+    <p>Working memory holds only ~4 items at once (Miller's revised "magical number"). Chunking beats this limit by grouping items into meaningful units — each chunk counts as ONE item. Chess grandmasters don't memorize 32 pieces; they memorize ~5 "patterns." Expertise is largely the accumulation of powerful chunks.</p>
+  </div>
+
+  <div class="steps-title">Step-by-Step Practice</div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 1 — List Everything First</div>
+      <div class="step-text">Write out all the items you need to memorize without organizing them. For a 30-item list, get everything on paper before grouping.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 2 — Find Natural Groups</div>
+      <div class="step-text">Look for categories, patterns, causes/effects, timelines, or themes. Group your items into clusters of 3–5. Aim for 5–7 chunks total from a long list.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 3 — Name Each Chunk</div>
+      <div class="step-text">Give each group a memorable label — ideally one word or a short phrase. This "chunk header" becomes the hook that pulls the whole group from memory.</div>
+      <div class="step-tip">💡 The label should feel meaningful to you, not generic. "Disaster causes" beats "Group A."</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 4 — Learn Chunk Labels First</div>
+      <div class="step-text">Memorize just the chunk names until you can recall them all from memory. Then layer in the items within each chunk. Two-level recall is far more reliable.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 5 — Draw a Mind Map</div>
+      <div class="step-text">Visually map your chunks with the topic at center, chunk labels as branches, and items as leaves. Hand-drawing activates deeper encoding than typing.</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <p>Learning <strong>WW2 causes</strong>? Instead of 12 random facts, chunk into: <strong>"MAIN" causes</strong> (Militarism, Alliances, Imperialism, Nationalism) + <strong>Treaty failures</strong> + <strong>Economic collapse</strong>. Now you only need to recall 3 chunks — and the details follow naturally.</p>
+  </div>
+
+  <div class="try-it">
+    <h4>✏️ Try It Now</h4>
+    <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.8rem;">Take a topic from your exam and write your chunk labels (groups) here:</p>
+    <textarea id="chunk-input" placeholder="Topic: ___&#10;Chunk 1: &#10;Chunk 2: &#10;Chunk 3: "></textarea>
+    <button class="try-btn" onclick="confirmTryIt('chunk-input', 'chunk-feedback', 'Nicely chunked! Now drill just those chunk names until they\'re automatic — then add the details inside each. You\'ve just shrunk your memory load dramatically.')">Lock In My Chunks →</button>
+    <div class="feedback" id="chunk-feedback"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="showTechnique(2)">← Previous</button>
+    <button class="nav-btn primary" onclick="showTechnique(4)">Next: Mnemonics →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TECHNIQUE 5: MNEMONICS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="technique-panel" id="panel-4">
+  <div class="technique-header">
+    <div class="technique-number">05</div>
+    <div class="technique-title-block">
+      <h2>Mnemonics</h2>
+      <div class="technique-tagline">Encode facts into rhymes, acronyms, and stories your brain won't forget</div>
+    </div>
+    <span class="difficulty-badge diff-easy">Easy to start</span>
+  </div>
+
+  <div class="science-box">
+    <p>Mnemonics work by attaching new, arbitrary information to something already in long-term memory (words, rhythm, images). They exploit dual-coding (verbal + visual) and the brain's preference for narrative and pattern. Mnemonic learners outperform rote memorizers on recall tests by 40–60% in multiple studies.</p>
+  </div>
+
+  <div class="steps-title">Step-by-Step Practice</div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 1 — Identify What Needs Anchoring</div>
+      <div class="step-text">Mnemonics shine for: ordered lists, hard-to-spell terms, arbitrary facts (dates, names, formulas), and abstract concepts. Identify your 5 hardest-to-remember items.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 2 — Choose Your Mnemonic Type</div>
+      <div class="step-text"><strong>Acronym:</strong> ROYGBIV for rainbow colors. <strong>Acrostic:</strong> "My Very Energetic Mother Just Served Us Nachos" for planets. <strong>Rhyme:</strong> "In 1492, Columbus sailed the ocean blue." <strong>Story:</strong> Chain facts into a mini narrative.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 3 — Make It Personal & Weird</div>
+      <div class="step-text">The best mnemonics are ones you create yourself — involving your name, your friends, or absurd situations. Personalization dramatically improves encoding.</div>
+      <div class="step-tip">💡 A bad mnemonic you invented beats a perfect one someone else made.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 4 — Test the Mnemonic</div>
+      <div class="step-text">Write the mnemonic. Cover it. Can you reconstruct the original list from the mnemonic alone? If not, revise it until you can reliably decode it.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 5 — Use Spaced Repetition on Mnemonics</div>
+      <div class="step-text">Mnemonics aren't permanent — combine them with spaced repetition. Review the mnemonic → recall the original items → space out reviews over days.</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <p>Remembering the <strong>cranial nerves</strong>? "Oh Oh Oh To Touch And Feel Very Good Velvet, AH!" — where each first letter matches: Olfactory, Optic, Oculomotor, Trochlear, Trigeminal, Abducens, Facial, Vestibulocochlear, Glossopharyngeal, Vagus, Accessory, Hypoglossal.</p>
+  </div>
+
+  <div class="try-it">
+    <h4>✏️ Try It Now</h4>
+    <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.8rem;">Create a mnemonic for something you need to memorize:</p>
+    <textarea id="mnem-input" placeholder="What I'm memorizing: &#10;My mnemonic: "></textarea>
+    <button class="try-btn" onclick="confirmTryIt('mnem-input', 'mnem-feedback', 'That\'s your mnemonic! Test it: close this, wait 5 minutes, then try to recall the original list from your mnemonic alone. Revise if needed — the testing is what makes it stick.')">Test My Mnemonic →</button>
+    <div class="feedback" id="mnem-feedback"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="showTechnique(3)">← Previous</button>
+    <button class="nav-btn primary" onclick="showTechnique(5)">Next: Feynman Technique →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TECHNIQUE 6: FEYNMAN -->
+<!-- ═══════════════════════════════════════ -->
+<div class="technique-panel" id="panel-5">
+  <div class="technique-header">
+    <div class="technique-number">06</div>
+    <div class="technique-title-block">
+      <h2>The Feynman Technique</h2>
+      <div class="technique-tagline">If you can't explain it simply, you don't understand it yet</div>
+    </div>
+    <span class="difficulty-badge diff-hard">Deep work</span>
+  </div>
+
+  <div class="science-box">
+    <p>Named after Nobel Prize-winning physicist Richard Feynman, this technique targets understanding — not surface memorization. Cognitive science calls this "elaborative interrogation." Explaining forces your brain to identify exactly where knowledge breaks down, producing targeted, durable learning. Studies show it produces 2× better transfer to new problems vs. re-reading.</p>
+  </div>
+
+  <div class="steps-title">Step-by-Step Practice</div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 1 — Choose a Concept</div>
+      <div class="step-text">Pick one concept — not a whole chapter. "Natural selection," "supply and demand," "the chain rule." Single concepts only. Write it at the top of a blank page.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 2 — Explain It to a Child</div>
+      <div class="step-text">Write out an explanation as if teaching a 10-year-old. Use simple words. No jargon. No acronyms. If you can't simplify it, that reveals what you don't truly understand.</div>
+      <div class="step-tip">💡 Speak it aloud — explaining verbally exposes gaps faster than writing.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 3 — Find the Gaps</div>
+      <div class="step-text">Where did you get stuck? Where did you use jargon because you couldn't simplify? Where did your explanation feel fuzzy or circular? Circle these. They are your real study targets.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 4 — Go Back to Source Material</div>
+      <div class="step-text">Study only the gaps you found. Read the textbook or notes specifically for the points you couldn't explain. Then close everything and write the explanation again from scratch.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggleStep(this)">
+    <div class="step-check">✓</div>
+    <div class="step-body">
+      <div class="step-label">Step 5 — Simplify with Analogies</div>
+      <div class="step-text">Create an analogy that maps the concept to something familiar. A good analogy means you understand deeply. "The immune system is like a bouncer with a guest list" beats "the immune system provides adaptive defense."</div>
+      <div class="step-tip">💡 Exam essays that use accurate analogies consistently score higher.</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <p>Trying to explain <strong>entropy</strong>: "Things naturally get more disordered over time — like your room after a week without tidying." Stuck on why? Go back, read about thermodynamics, then explain again. The second explanation will be far cleaner — and you'll remember it for years.</p>
+  </div>
+
+  <div class="try-it">
+    <h4>✏️ Try It Now</h4>
+    <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.8rem;">Pick one concept from your exam. Explain it here as simply as you can — no jargon:</p>
+    <textarea id="feyn-input" placeholder="The concept is: ___&#10;&#10;Explained simply: ..."></textarea>
+    <button class="try-btn" onclick="confirmTryIt('feyn-input', 'feyn-feedback', 'Well done. Now read what you wrote — anywhere it feels vague or where you used jargon, that\'s a gap to fill. Go look it up, then rewrite that section until it\'s genuinely simple.')">Find My Gaps →</button>
+    <div class="feedback" id="feyn-feedback"></div>
+  </div>
+
+  <!-- QUICK REFERENCE -->
+  <div style="margin-top: 2.5rem;">
+    <div class="steps-title">Quick Reference — All 6 Techniques</div>
+    <div class="reference-grid">
+      <div class="ref-card">
+        <h4>Spaced Repetition</h4>
+        <div class="ref-use">Best for: Facts, vocab, definitions</div>
+        <div class="ref-time">⏱ 15–20 min/day</div>
+      </div>
+      <div class="ref-card">
+        <h4>Active Recall</h4>
+        <div class="ref-use">Best for: All content types</div>
+        <div class="ref-time">⏱ Any study session</div>
+      </div>
+      <div class="ref-card">
+        <h4>Method of Loci</h4>
+        <div class="ref-use">Best for: Ordered lists, sequences</div>
+        <div class="ref-time">⏱ 20–30 min setup</div>
+      </div>
+      <div class="ref-card">
+        <h4>Chunking</h4>
+        <div class="ref-use">Best for: Large lists, big topics</div>
+        <div class="ref-time">⏱ 30 min organizing</div>
+      </div>
+      <div class="ref-card">
+        <h4>Mnemonics</h4>
+        <div class="ref-use">Best for: Hard-to-recall specifics</div>
+        <div class="ref-time">⏱ 10 min per item</div>
+      </div>
+      <div class="ref-card">
+        <h4>Feynman</h4>
+        <div class="ref-use">Best for: Deep understanding</div>
+        <div class="ref-time">⏱ 45–60 min per concept</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="showTechnique(4)">← Previous</button>
+    <button class="nav-btn primary" onclick="showCompletion()">Complete the Guide ✓</button>
+  </div>
+</div>
+
+<div class="completion-banner" id="completionBanner">
+  <h2>🎓 Memory Mastery Unlocked</h2>
+  <p>You've worked through all six techniques. The most powerful study system combines <strong style="color:var(--gold)">Active Recall + Spaced Repetition</strong> as your foundation, with the others as targeted tools. Good luck on your exam.</p>
+</div>
+
+</main>
+
+<script>
+  let totalSteps = 0;
+  let doneSteps = 0;
+  let currentPanel = 0;
+
+  function init() {
+    totalSteps = document.querySelectorAll('.step').length;
+    updateProgress();
+  }
+
+  function toggleStep(el) {
+    el.classList.toggle('done');
+    doneSteps = document.querySelectorAll('.step.done').length;
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const pct = totalSteps ? (doneSteps / totalSteps * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressCount').textContent = doneSteps + ' / ' + totalSteps + ' steps';
+  }
+
+  function showTechnique(index) {
+    document.querySelectorAll('.technique-panel').forEach((p, i) => {
+      p.classList.toggle('active', i === index);
+    });
+    document.querySelectorAll('.nav-tab').forEach((t, i) => {
+      t.classList.toggle('active', i === index);
+    });
+    currentPanel = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function confirmTryIt(inputId, feedbackId, message) {
+    const val = document.getElementById(inputId).value.trim();
+    const fb = document.getElementById(feedbackId);
+    if (!val) {
+      fb.style.display = 'block';
+      fb.style.color = 'var(--rust)';
+      fb.textContent = 'Try filling in something — even a rough attempt counts!';
+      return;
+    }
+    fb.style.display = 'block';
+    fb.style.color = 'var(--sage)';
+    fb.textContent = '✓ ' + message;
+  }
+
+  function showCompletion() {
+    document.getElementById('completionBanner').classList.add('visible');
+    document.getElementById('completionBanner').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  init();
+</script>
+</body>
+</html>
